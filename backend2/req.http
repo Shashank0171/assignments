@@ -31,8 +31,24 @@ Content-Type: application/json
 }
 
 
+###User authentication(login) req
+POST http://localhost:4000/user-api/auth
+Content-Type: application/json
+
+{
+    "username":"mani",
+    "password":"shashi"
+}
+
+
 ### Delete user by ObjectId
 DELETE http://localhost:4000/user-api/users/697dc6e692189db2d7d305e8
+
+
+###req for protected route
+GET http://localhost:4000/user-api/test
+
+
 
 
 

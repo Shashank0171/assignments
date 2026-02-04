@@ -4,15 +4,19 @@ const app = exp()
 import { userApp } from './APIs/UserAPI.js'
 import { productApp } from './APIs/ProductAPI.js'
 import { connect } from 'mongoose'
+import cookieParser from "cookie-parser";
 
 
 //Body parser middleware (must come BEFORE routes)
 app.use(exp.json())
+//add cookie-parser middleware
+app.use(cookieParser())
 
 
 //Mounting API routes
 app.use('/user-api', userApp)
 app.use('/product-api', productApp)
+
 
 
 
@@ -22,7 +26,7 @@ async function connectDB() {
         await connect('mongodb://localhost:27017/anuragdb2')
         console.log("Connected to DB server successfully")
         const PORT = 4000
-        app.listen(PORT, () =>console.log(`Server is running on port ${PORT}....`))
+        app.listen(PORT, () =>console.log(`Server is running on port 4000....`))
     } catch (err) {
         console.log("Error in DB connection", err)
     }

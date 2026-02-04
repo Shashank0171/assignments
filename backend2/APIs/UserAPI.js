@@ -1,7 +1,11 @@
 import exp from "express"
 import { UserModel } from "../models/UserModel.js"
 export const userApp=exp.Router()
+import {hash,compare} from 'bcryptjs'
+import { verifyToken } from "../MIDDLEWARES/verify.js"
+import jwt from 'jsonwebtoken'
 userApp.use(exp.json())
+
 
 
 //USER API ROUTES
@@ -10,6 +14,9 @@ userApp.use(exp.json())
 userApp.post('/users',async (req,res)=>{
     //get new user form req
     let newUser=req.body;
+    //hash the password
+    let hashedPassword=await hash(newUser.password,12)
+    newUser.password=hashedPassword
     //craete new user document
     let newUserDoc=new UserModel(newUser)
 
@@ -17,6 +24,37 @@ userApp.post('/users',async (req,res)=>{
     await newUserDoc.save()
     res.json({message:"new user craeted",payload:newUserDoc})
 })
+
+
+//user authentication(login) route
+userApp.post('/auth',async(req,res)=>{
+    //get user cred obj
+    let userCred=req.body
+    console.log("step1")
+    //check for username
+    let userOfDB=await UserModel.findOne({username:userCred.username})
+    //if user not found
+    if(userOfDB===null){
+        return res.status(404).json({message:"invalid username"})
+    }
+    //compare password
+    let status=await compare(userCred.password,userOfDB.password)
+    if(status===false){
+        return res.status(404).json({message:"invalid password"})
+    }
+    //create signed token
+    let signedToken=jwt.sign({username:userCred.username},'abcdef',{expiresIn:30})
+    //save token as httponly
+    res.cookie('token',signedToken,{
+        httponly:true,//it is httponly cookie
+        secure:false,
+        sameSite:"lax"
+    })
+    //send the token
+    res.status(200).json({message:"login sucess"})
+})
+
+
 
 //read user by id
 userApp.get('/users/:id',async(req,res)=>{
@@ -51,8 +89,10 @@ userApp.put('/users/:id',async(req,res)=>{
     res.json({message:"User data updated",payload:latestUser})
 })
 
+
+
 //delete User by ObjectId
-userApp.delete('users/:id',async(req,res)=>{
+userApp.delete('/users/:id',async(req,res)=>{
     //get user id from the url param
     let objId=req.params.id;
     //delete user from db
@@ -61,3 +101,8 @@ userApp.delete('users/:id',async(req,res)=>{
     res.json({message:"User removed",payload:deletedUser})
 })
 
+
+userApp.get('/test',verifyToken,(req,res)=>{
+    res.json({message:"test route"})
+})
+ 

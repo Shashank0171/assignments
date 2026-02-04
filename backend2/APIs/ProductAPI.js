@@ -32,7 +32,7 @@ productApp.get('/products/:id',async(req,res)=>{
     let objId=req.params.id;
     //get product from db by id
     let productObj=await ProductModel.findById(objId)
-    //send product to client
+    //send product to clien
     res.json({message:"product data by id",payload:productObj})
 })
 

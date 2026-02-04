@@ -1,0 +1,44 @@
+###create Product req
+POST  http://localhost:4000/product-api/products
+Content-Type: application/json
+
+  {
+    "productName": "laptop",
+    "price": 60000,
+    "brand": "dell"
+  }
+
+
+////////////////////////////////////////      User-Requests    /////////////////////////////////////////////////
+
+
+###get the user data
+GET http://localhost:4000/user-api/user
+
+
+
+###create user req
+POST http://localhost:4000/user-api/user
+Content-Type: application/json
+
+{
+  "name":"test",
+  "email":"test@gmail.com",
+  "password":"",
+  "cart":[]
+}
+
+
+
+###read user by id
+GET http://localhost:4000/user-api/user/6980732075eafd5c786b9478
+
+
+
+
+### Req to add product to cart 
+PUT  http://localhost:4000/user-api/user-cart/user-id/6980732075eafd5c786b9478/product-id/69806bdebef8b03d9a62995c
+
+
+###req to add quantiy to cart
+PUT  http://localhost:4000/user-api/user-cart-update/user-id/6980732075eafd5c786b9478/product-id/69806bc8bef8b03d9a62995a
