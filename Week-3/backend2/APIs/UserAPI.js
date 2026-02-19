@@ -30,7 +30,7 @@ userApp.post('/users',async (req,res)=>{
 userApp.post('/auth',async(req,res)=>{
     //get user cred obj
     let userCred=req.body
-    console.log("step1")
+    //console.log("step1")
     //check for username
     let userOfDB=await UserModel.findOne({username:userCred.username})
     //if user not found
