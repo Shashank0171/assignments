@@ -11,8 +11,11 @@ const app=exp()
 //Add body parser middleware
 app.use(exp.json())
 app.use(cors({
-  origin: "http://localhost:5173",
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  origin: [
+    "http://localhost:5173",
+    "https://assignments-omega-one.vercel.app"
+  ],
+  methods: ["GET","POST","PUT","DELETE"],
   credentials: true
 }));
 //Forward req to UserApi if path with is /user-api
