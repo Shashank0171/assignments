@@ -30,7 +30,7 @@ function AddUser() {
 
       if (res.status === 201) {
         //user created it shd navigate to users list
-        navigate("/users-list");
+        navigate("/userlist");
       } else {
         console.log(res)
         throw new Error("error occurred");
