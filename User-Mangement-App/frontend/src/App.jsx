@@ -21,9 +21,9 @@ function App() {
                     element: <AddUser />
                 },
                 {
-                    path: "users-list",
+                    path: "userlist",
                     element: <UserList />
-                },
+                  },
                 {
                     path: "user",
                     element: <User />
