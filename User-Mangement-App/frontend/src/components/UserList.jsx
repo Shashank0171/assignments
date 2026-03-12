@@ -8,19 +8,22 @@ function UsersList() {
   useEffect(() => {
     async function getUsers() {
       try {
-        let res = await fetch("https://assignments-qo2z.onrender.com/user-api");
-
+        let res = await fetch(
+          "https://assignments-qo2z.onrender.com/user-api/user"
+        );
+  
         if (res.status === 200) {
-          let resObj = await res.json();
-          setUsers(resObj.payload);
+          let data = await res.json();
+          setUsers(data.payload);
         }
       } catch (err) {
         console.log(err);
       }
     }
-
+  
     getUsers();
   }, []);
+  
 
   const gotoUser = (userObj) => {
     navigate("/user", { state: { user: userObj } });
