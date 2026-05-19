@@ -1,65 +1,76 @@
-//create HTTp server
-import exp from 'express'
-import {connect} from 'mongoose'
-import { config } from 'dotenv'
-import {UserApp} from './APIs/UserApi.js'
-import cors from 'cors'
-//read environment
-config()
-const app=exp()
+// create HTTP server
+import exp from "express";
+import mongoose from "mongoose";
+import { config } from "dotenv";
+import { UserApp } from "./APIs/UserApi.js";
+import cors from "cors";
 
-//Add body parser middleware
-app.use(exp.json())
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://assignments-omega-one.vercel.app"
-  ],
-  methods: ["GET","POST","PUT","DELETE"],
-  credentials: true
-}));
-//Forward req to UserApi if path with is /user-api
-app.use("/user-api",UserApp)
+// read environment variables
+config();
 
+const app = exp();
 
-//connect to data base
+// body parser middleware
+app.use(exp.json());
+
+// CORS configuration
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://assignments-omega-one.vercel.app",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+
+// forward requests
+app.use("/user-api", UserApp);
+
+// connect to MongoDB
 const connectDB = async () => {
-    try {
-      await connect(process.env.DB_URL)
-      console.log("DB Connection Successful")
-  
-      app.listen(process.env.PORT, () =>
-        console.log(`Server Started ${process.env.PORT}.......`)
-      )
-    } catch (err) {
-      console.log("Err occurred", err)
-    }
-  }
-  connectDB()
+  try {
+    await mongoose.connect(process.env.DB_URL);
 
-  // error handling middleware (ALWAYS LAST)
-  app.use((err, req, res, next) => {
-    // Mongoose validation error
-    if (err.name === "ValidationError") {
-      return res.status(400).json({
-        message: "Validation failed",
-        errors: err.errors,
-      });
-    }
-    // Invalid ObjectId
-    if (err.name === "CastError") {
-      return res.status(400).json({
-        message: "Invalid ID format",
-      });
-    }
-    // Duplicate key
-    if (err.code === 11000) {
-      return res.status(409).json({
-        message: "Duplicate field value",
-      });
-    }
-    res.status(500).json({
-      message: "Internal Server Error",
+    console.log("DB Connection Successful");
+
+    app.listen(process.env.PORT, () => {
+      console.log(`Server Started on Port ${process.env.PORT}`);
     });
+  } catch (err) {
+    console.log("Error occurred:", err);
+  }
+};
+
+connectDB();
+
+// error handling middleware
+app.use((err, req, res, next) => {
+  // mongoose validation error
+  if (err.name === "ValidationError") {
+    return res.status(400).json({
+      message: "Validation failed",
+      errors: err.errors,
+    });
+  }
+
+  // invalid object id
+  if (err.name === "CastError") {
+    return res.status(400).json({
+      message: "Invalid ID format",
+    });
+  }
+
+  // duplicate key error
+  if (err.code === 11000) {
+    return res.status(409).json({
+      message: "Duplicate field value",
+    });
+  }
+
+  // default server error
+  res.status(500).json({
+    message: "Internal Server Error",
   });
-  
+});

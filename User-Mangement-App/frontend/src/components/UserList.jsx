@@ -9,7 +9,7 @@ function UsersList() {
     async function getUsers() {
       try {
         let res = await fetch(
-          "https://assignments-qo2z.onrender.com/user-api/user"
+          "https://assignments-2-393j.onrender.com/user-api/user"
         );
   
         if (res.status === 200) {
